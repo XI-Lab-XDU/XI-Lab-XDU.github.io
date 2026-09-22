@@ -398,16 +398,18 @@ zh: '五篇论文被 ECCV 2026 接收，第一作者：[[Nuoyan Zhou]] 和 [[Pen
 
 ### 一次性设置（约 3 分钟）
 
-当前部署在**个人账户的用户站**（`astro.config.mjs` 里 `site: 'https://ckk038.github.io'`，没有 `base`），
-所以仓库名必须是 **`<你的用户名>.github.io`**。GitHub 就是靠这个特殊仓库名
-决定站点挂在根路径还是子路径的，名字不对会白屏。
+当前部署到**实验室组织的组织站**（`astro.config.mjs` 里 `site: 'https://xi-lab-xdu.github.io'`，没有 `base`），
+所以仓库名必须是 **`XI-Lab-XDU.github.io`**。GitHub 就是靠这个特殊仓库名
+决定站点挂在根路径还是子路径的，名字差一个字就会白屏。
 
-1. 在个人账户下新建仓库，名字填 `<你的用户名>.github.io`，公开或私有都行。
+1. 在 `XI-Lab-XDU` 组织下新建仓库，名字填 `XI-Lab-XDU.github.io`，公开或私有都行。
    **不要**勾选 "Add a README file"，否则第一次推送会因为远程有本地没有的提交而被拒。
+   > 建仓需要组织给你建仓权限（Members 默认能不能建仓由组织设置决定）；
+   > 下面的第 3 步「开 Pages」需要该仓库的 **Admin** 权限。权限不够就找组织管理员。
 2. 本地关联远程并推送：
 
    ```bash
-   git remote add origin https://github.com/<你的用户名>/<你的用户名>.github.io.git
+   git remote set-url origin https://github.com/XI-Lab-XDU/XI-Lab-XDU.github.io.git
    git branch -M main
    git push -u origin main
    ```
@@ -415,18 +417,24 @@ zh: '五篇论文被 ECCV 2026 接收，第一作者：[[Nuoyan Zhou]] 和 [[Pen
 3. 仓库 **Settings → Pages → Build and deployment → Source** 选 **GitHub Actions**。
    （不要选 "Deploy from a branch"——那条路不会跑我们写的构建流程。）
 4. 等一两分钟，点开仓库的 **Actions** 标签页，看到绿色对勾就发布好了，
-   地址是 `https://<你的用户名>.github.io`。
+   地址是 **<https://xi-lab-xdu.github.io>**。
 
 之后就一劳永逸了：**每次 `git push` 到 `main`，GitHub 自动重新构建并发布**，不用手动做任何事。
 在 Actions 页面点 *Run workflow* 也可以手动触发一次部署。
+
+> **组织仓库的两个常见卡点**：一是组织如果限制了 Actions（Org Settings → Actions →
+> Permissions），工作流可能起不来；二是如果第一次推送时 Pages 还没开，构建会报
+> `Get Pages site failed`，这时候去把 Pages 开了，再点 **Re-run all jobs** 重跑即可。
+> 工作流里已显式声明了 `permissions: pages: write / id-token: write`，
+> 所以不需要额外改仓库的 workflow 权限默认值。
 
 ### 想换地址怎么办
 
 | 目标地址 | 要改的地方 |
 |---|---|
-| 个人用户站 `https://<用户名>.github.io`（当前） | 仓库名对上即可，不用改代码 |
-| 组织站 `https://<组织名>.github.io` | 改 `astro.config.mjs` 的 `site`、`public/robots.txt` 里的 Sitemap、`git remote`，仓库名改成 `<组织名>.github.io` |
-| 子路径项目站 `https://<用户名>.github.io/homepage` | 要改**代码**，见下 |
+| 组织站 `https://xi-lab-xdu.github.io`（当前） | 仓库名对上即可，不用改代码 |
+| 个人用户站 `https://<用户名>.github.io` | 改 `astro.config.mjs` 的 `site`、`public/robots.txt` 里的 Sitemap、`git remote`，仓库名改成 `<用户名>.github.io` |
+| 子路径项目站 `https://xi-lab-xdu.github.io/homepage` | 要改**代码**，见下 |
 | 自有域名 `https://lab.example.edu.cn` | 改 `site`；仓库 **Settings → Pages → Custom domain** 填域名；域名商那边加 CNAME 记录 |
 
 **换成子路径项目站不能只加 `base`。** 实测过（构建了一份带 `base` 的产物来比对）：
